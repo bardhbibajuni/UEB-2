@@ -1,10 +1,10 @@
 <?php
 session_start();
-include "db.php";
+include "../db.php";
 
-if ($_SESSION['is_admin'] != 1) {
-    die("Access denied");
-}
+// if ($_SESSION['is_admin'] != 1) {
+//     die("Access denied");
+// }
 
 $result = mysqli_query($conn, "SELECT * FROM users");
 ?>
