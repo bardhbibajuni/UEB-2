@@ -1,39 +1,51 @@
 <?php
 class Admin {
 
-    private $conn; 
+    private $users;
+    private $courses;
 
-    public function __construct($connection) {
-        $this->conn = $connection;
+    public function __construct($users, $courses) {
+        $this->users = $users;
+        $this->courses = $courses;
     }
 
     public function getUsers() {
-        return mysqli_query($this->conn, "SELECT * FROM users");
+        return $this->users;
     }
-
     public function deleteUser($id) {
-        $id = (int)$id;
-        return mysqli_query($this->conn, "DELETE FROM users WHERE id=$id");
+        foreach ($this->users as $index => $user) {
+            if ($user['id'] == $id) {
+                unset($this->users[$index]);
+                return true;
+            }
+        }
+        return false;
     }
 
-    public function getCourses($search = "") {
-        $search = mysqli_real_escape_string($this->conn, $search);
-        return mysqli_query($this->conn, 
-            "SELECT * FROM courses WHERE title LIKE '%$search%'"
-        );
+    public function getCourses() {
+        return $this->courses;
     }
 
     public function deleteCourse($id) {
-        $id = (int)$id;
-        return mysqli_query($this->conn, "DELETE FROM courses WHERE id=$id");
+        foreach ($this->courses as $index => $course) {
+            if ($course['id'] == $id) {
+                unset($this->courses[$index]);
+                return true;
+            }
+        }
+        return false;
     }
 
-    public function countUsers() {
-        return mysqli_num_rows(mysqli_query($this->conn, "SELECT * FROM users"));
-    }
+    public function searchCourses($term) {
+        $result = [];
 
-    public function countCourses() {
-        return mysqli_num_rows(mysqli_query($this->conn, "SELECT * FROM courses"));
+        foreach ($this->courses as $course) {
+            if (stripos($course['title'], $term) !== false) {
+                $result[] = $course;
+            }
+        }
+
+        return $result;
     }
 }
 ?>

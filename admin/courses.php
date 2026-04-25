@@ -1,19 +1,18 @@
 <?php
 session_start();
-include "../db.php";
+include "../data/data.php";
+include "classes/Admin.php";
 
-// if ($_SESSION['is_admin'] != 1) {
-//     die("Access denied");
-// }
-
-$result = mysqli_query($conn, "SELECT * FROM courses");
-?>
-
-<h2>Courses</h2>
-
-<?php
-while ($course = mysqli_fetch_assoc($result)) {
-    echo htmlspecialchars($course['title']);
-    echo " <a href='delete_course.php?id=" . $course['id'] . "' style='color:red'>Delete</a><br>";
+if ($_SESSION['user']['role'] != "admin") {
+    die("Access denied");
 }
-?>
+
+$admin = new Admin($users, $courses);
+$courses = $admin->getCourses();
+
+echo "<h2>Courses</h2>";
+
+foreach ($courses as $course) {
+    echo $course['title'];
+    echo " <a href='delete_course.php?id=".$course['id']."'>Delete</a><br>";
+}
