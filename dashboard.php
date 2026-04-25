@@ -1,16 +1,14 @@
 <?php
 session_start();
-
+/* Kontrollo nese perdoruesi eshte kyçur, nese jo e ridrejton ne login */
 if(!isset($_SESSION['user'])){
     header("Location: login.php");
     exit();
 }
 ?>
-
 <?php include "header.php"; ?>
 
 <style>
-
 .bg {
     position: fixed;
     width: 100%;
@@ -91,9 +89,11 @@ if(!isset($_SESSION['user'])){
   
 </div>
 
+
+
 <script>
 const glow = document.getElementById("glow");
-
+/* Levizja e efektit me maus */
 document.addEventListener("mousemove", (e) => {
     glow.style.left = e.clientX + "px";
     glow.style.top = e.clientY + "px";
