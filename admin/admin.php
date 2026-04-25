@@ -1,23 +1,26 @@
 <?php
 session_start();
-include "../db.php";
+include "../data/data.php";
 include "classes/Admin.php";
 include "includes/functions.php";
 
-// if (!isset($_SESSION['user_id']) || $_SESSION['is_admin'] != 1) {
-//     die("Access denied");
-// }
+if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != "admin") {
+    die("Access denied");
+}
 
 $admin = new Admin($conn);
 
 $search = isset($_GET['search']) ? clean($_GET['search'], $conn) : "";
 
-$courses = $admin->getCourses($search);
-$users_count = $admin->countUsers();
-$courses_count = $admin->countCourses();
+if ($search) {
+    $courses = $admin->searchCourses($search);
+} else {
+    $courses = $admin->getCourses();
+}
 
 setcookie("last_visit", date("Y-m-d H:i:s"), time() + 3600);
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -120,16 +123,12 @@ setcookie("last_visit", date("Y-m-d H:i:s"), time() + 3600);
         <h2>Courses</h2>
 
         <?php
-        if (mysqli_num_rows($courses) == 0) {
-            echo "No courses found";
-        }
-
-        while ($course = mysqli_fetch_assoc($courses)) {
-            echo "<p>" . htmlspecialchars($course['title']) . 
-                 " <a class='danger' href='delete_course.php?id=" . $course['id'] . "' 
-                 onclick=\"return confirm('Are you sure?')\">Delete</a></p>";
-        }
-        ?>
+foreach ($courses as $course) {
+    echo $course['title'];
+    echo " <a href='delete_course.php?id=".$course['id']."' onclick=\"return confirm('Delete?')\">Delete</a><br>";
+}
+?>
+<a href="users.php">Manage Users</a>
     </div>
 
 </div>

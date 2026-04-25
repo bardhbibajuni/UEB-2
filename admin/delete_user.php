@@ -1,14 +1,15 @@
 <?php
 session_start();
-include "../db.php";
+include "data/data.php";
+include "classes/Admin.php";
 
-// if ($_SESSION['is_admin'] != 1) {
-//     die("Access denied");
-// }
+if ($_SESSION['user']['role'] != "admin") {
+    die("Access denied");
+}
 
-$id = (int) $_GET['id'];
+$admin = new Admin($users, $courses);
 
-mysqli_query($conn, "DELETE FROM users WHERE id=$id");
+// simulim
+$admin->deleteUser($_GET['id']);
 
 header("Location: users.php");
-?>
