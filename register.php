@@ -9,7 +9,7 @@ if(isset($_POST['register'])){
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    // REGEX VALIDIM per email
+    // regexi per email
     if(!preg_match("/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)){
         die("Invalid email format");
     }
