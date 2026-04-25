@@ -1,11 +1,23 @@
 <?php
 session_start();
 include "../db.php";
+include "classes/Admin.php";
+include "includes/functions.php";
 
 // if (!isset($_SESSION['user_id']) || $_SESSION['is_admin'] != 1) {
 //     die("Access denied");
 // }
-// ?>
+
+$admin = new Admin($conn);
+
+$search = isset($_GET['search']) ? clean($_GET['search'], $conn) : "";
+
+$courses = $admin->getCourses($search);
+$users_count = $admin->countUsers();
+$courses_count = $admin->countCourses();
+
+setcookie("last_visit", date("Y-m-d H:i:s"), time() + 3600);
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -77,6 +89,25 @@ include "../db.php";
 
 <div class="main">
 
+  <div class="card">
+        <h3>Statistics</h3>
+        <p>Total Users: <?php echo $users_count; ?></p>
+        <p>Total Courses: <?php echo $courses_count; ?></p>
+    </div>
+
+
+    <div class="card">
+        <h3>Last Visit</h3>
+        <?php
+        if (isset($_COOKIE['last_visit'])) {
+            echo $_COOKIE['last_visit'];
+        } else {
+            echo "First time here";
+        }
+        ?>
+    </div>
+
+
     <div class="card">
         <h2>Search Courses</h2>
         <form method="GET">
@@ -89,16 +120,14 @@ include "../db.php";
         <h2>Courses</h2>
 
         <?php
-        $search = isset($_GET['search']) 
-            ? mysqli_real_escape_string($conn, $_GET['search']) 
-            : "";
+        if (mysqli_num_rows($courses) == 0) {
+            echo "No courses found";
+        }
 
-        $sql = "SELECT * FROM courses WHERE title LIKE '%$search%'";
-        $result = mysqli_query($conn, $sql);
-
-        while ($course = mysqli_fetch_assoc($result)) {
+        while ($course = mysqli_fetch_assoc($courses)) {
             echo "<p>" . htmlspecialchars($course['title']) . 
-                 " <a class='danger' href='delete_course.php?id=" . $course['id'] . "'>Delete</a></p>";
+                 " <a class='danger' href='delete_course.php?id=" . $course['id'] . "' 
+                 onclick=\"return confirm('Are you sure?')\">Delete</a></p>";
         }
         ?>
     </div>
