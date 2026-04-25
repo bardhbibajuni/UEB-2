@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "data/data.php";
+include "../data/data.php";
 include "classes/Admin.php";
 
 if ($_SESSION['user']['role'] != "admin") {
