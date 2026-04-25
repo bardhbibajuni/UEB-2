@@ -24,7 +24,7 @@ if (isset($_POST['login'])) {
         $user = mysqli_fetch_assoc($result);
 
         if(password_verify($password, $user['password'])){
-
+$_SESSION['course_type'] = $user['course_type'];
             $_SESSION['firstname'] = $user['firstname'];
             $_SESSION['lastname'] = $user['lastname'];
             $_SESSION['role'] = $user['role'];
