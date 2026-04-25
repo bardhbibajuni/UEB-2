@@ -1,9 +1,10 @@
+
 <?php
 session_start();
 include "db.php";
+/* Kontrollo nese forma e login-it eshte derguar */
 
-if(isset($_POST['login'])){
-
+if (isset($_POST['login'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
@@ -24,15 +25,14 @@ if(isset($_POST['login'])){
 
         if(password_verify($password, $user['password'])){
 
-          
             $_SESSION['firstname'] = $user['firstname'];
             $_SESSION['lastname'] = $user['lastname'];
             $_SESSION['role'] = $user['role'];
 
             header("Location: dashboard.php");
             exit();
-
-        } else {
+        }
+        else {
             header("Location: login.php?error=wrong_password");
             exit();
         }
