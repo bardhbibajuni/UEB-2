@@ -4,13 +4,15 @@ include "../data/data.php";
 include "classes/Admin.php";
 include "includes/functions.php";
 
-if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != "admin") {
-    die("Access denied");
-}
+    if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != "admin") {
+        die("Access denied");
+    }
 
-$admin = new Admin($conn);
+$admin = new Admin($users, $courses);
+$users_count = $admin->countUsers();
+$courses_count = $admin->countCourses();
 
-$search = isset($_GET['search']) ? clean($_GET['search'], $conn) : "";
+$search = isset($_GET['search']) ? clean($_GET['search']) : "";
 
 if ($search) {
     $courses = $admin->searchCourses($search);
@@ -128,7 +130,7 @@ foreach ($courses as $course) {
     echo " <a href='delete_course.php?id=".$course['id']."' onclick=\"return confirm('Delete?')\">Delete</a><br>";
 }
 ?>
-<a href="users.php">Manage Users</a>
+
     </div>
 
 </div>

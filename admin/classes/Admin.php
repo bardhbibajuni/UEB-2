@@ -35,6 +35,15 @@ class Admin {
         }
         return false;
     }
+    
+        public function countUsers() {
+        return count($this->users);
+    }
+
+    public function countCourses() {
+        return count($this->courses);
+    }
+
 
     public function searchCourses($term) {
         $result = [];
