@@ -141,6 +141,14 @@ button:hover {
 <input type="text" name="lastname" placeholder="Last Name" required>
 <input type="email" name="email" placeholder="Email" required>
 <input type="password" name="password" placeholder="Password" required>
+       <select name="course_type" required>
+    <option value="">Select course category</option>
+    <option value="programming">Programming</option>
+    <option value="design">Design</option>
+    <option value="marketing">Marketing</option>
+    <option value="languages">Languages</option>
+    <option value="gaming">Gaming</option>
+</select>
 <button type="submit" name="register">Register</button>
 
 </form>
