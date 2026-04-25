@@ -10,7 +10,7 @@ if(!isset($_SESSION['user'])){
 <?php include "header.php"; ?>
 
 <style>
-/* 🌫️ Background mjegull */
+
 .bg {
     position: fixed;
     width: 100%;
@@ -23,7 +23,7 @@ if(!isset($_SESSION['user'])){
     z-index: -1;
 }
 
-/* Glow efekt */
+/* Glow efekti */
 .glow {
     position: fixed;
     width: 250px;
@@ -35,14 +35,14 @@ if(!isset($_SESSION['user'])){
     z-index: 0;
 }
 
-/* Container */
+/* Containeri */
 .dashboard {
     text-align: center;
     padding: 100px 20px;
     color: white;
 }
 
-/* Gradient text */
+
 .title {
     font-size: 3rem;
     font-weight: 700;
@@ -52,13 +52,13 @@ if(!isset($_SESSION['user'])){
     margin-bottom: 10px;
 }
 
-/* Subtitle */
+
 .subtitle {
     color: #9ca3af;
     margin-bottom: 30px;
 }
 
-/* Logout button */
+/* Logout butoni */
 .logout-btn {
     padding: 14px 30px;
     border-radius: 30px;

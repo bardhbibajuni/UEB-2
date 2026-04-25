@@ -78,7 +78,7 @@ nav a:hover {
 
         <?php if(isset($_SESSION['firstname'])) { ?>
 
-            <!-- 🔴 SHFAQ VETË EMRIN -->
+            <!-- me shfaq vetem emrin -->
             <span class="user">
                 👋 <?php echo $_SESSION['firstname']; ?>
             </span>

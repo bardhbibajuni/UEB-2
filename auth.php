@@ -7,12 +7,12 @@ if(isset($_POST['login'])){
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    /* REGEX EMAIL */
+    /*validimi i email me regex */
     if(!preg_match("/^[\w\.-]+@[\w\.-]+\.\w{2,}$/", $email)){
         die("Invalid email format!");
     }
 
-    /* prevent SQL injection */
+    /* parandalimi i sql injection */
     $email = mysqli_real_escape_string($conn, $email);
 
     $query = "SELECT * FROM users WHERE email='$email'";
@@ -24,7 +24,7 @@ if(isset($_POST['login'])){
 
         if(password_verify($password, $user['password'])){
 
-            /* 🔥 SESSION (IMPORTANT FIX) */
+          
             $_SESSION['firstname'] = $user['firstname'];
             $_SESSION['lastname'] = $user['lastname'];
             $_SESSION['role'] = $user['role'];

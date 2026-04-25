@@ -9,19 +9,19 @@ if(isset($_POST['register'])){
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    // 🔴 REGEX VALIDIM EMAIL
+    // REGEX VALIDIM per email
     if(!preg_match("/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)){
         die("Invalid email format");
     }
 
-    // 🔴 PASSWORD VALIDIM
+    //validim per password (minimum 6 characters)
     if(strlen($password) < 6){
         die("Password must be at least 6 characters");
     }
 
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    // 🔴 CHECK USER
+    //  kontrollojme nese useri ekziston me kete email
     $check = "SELECT * FROM users WHERE email='$email'";
     $res = mysqli_query($conn, $check);
 
@@ -29,7 +29,7 @@ if(isset($_POST['register'])){
         die("User already exists!");
     }
 
-    // 🔴 INSERT
+    //  nese nuk ekziston, e insertojme ne database
     $sql = "INSERT INTO users (email, password, role)
             VALUES ('$email', '$hashedPassword', 'user')";
 
@@ -133,7 +133,7 @@ button:hover {
     <h2>Create Account</h2>
 
    <form method="POST" action="auth.php" autocomplete="off">
-<!-- AUTOFILL BLOCK -->
+<!-- me blloku autofill-in  -->
 <input type="text" style="display:none" autocomplete="off">
 <input type="password" style="display:none" autocomplete="off">
 

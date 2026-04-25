@@ -1,6 +1,6 @@
 <?php include "header.php"; ?>
 
-<!-- HERO -->
+
 <div style="
     height:100vh;
     display:flex;
@@ -11,7 +11,7 @@
 
     <div>
 
-        <!--  LOGO -->
+        <!--  logoja -->
         <h1 style="
             font-family: 'Space Grotesk', sans-serif;
             font-size: 4rem;
@@ -41,7 +41,8 @@
             gap:15px;
             align-items:center;
         ">
-  <!-- pjesa e login-->
+
+
             <a href="login.php">
                 <button style="
                     width:270px;
@@ -66,8 +67,9 @@
                      Login
                 </button>
             </a>
+ 
+          
 
-            <!-- pjesa e register -->
             <a href="register.php">
                 <button style="
                     width:270px;

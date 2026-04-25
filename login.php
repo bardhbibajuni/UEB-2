@@ -58,7 +58,7 @@ body {
     color: white;
 }
 
-/*  BACKGROUND MIST */
+
 .bg {
     position: absolute;
     width: 100%;
@@ -71,7 +71,7 @@ body {
     z-index: 0;
 }
 
-/* GLASS CARD */
+
 .card {
     position: relative;
     z-index: 2;
@@ -96,7 +96,7 @@ body {
     margin-bottom: 25px;
 }
 
-/* INPUTS */
+
 input {
     width: 100%;
     padding: 14px;
@@ -109,7 +109,7 @@ input {
     transition: 0.3s;
 }
 
-/* Emaili */
+
 input[type="email"] {
     background: rgba(168, 85, 247, 0.12);
     border: 1px solid rgba(192, 132, 252, 0.4);
@@ -121,13 +121,13 @@ input[type="email"]:focus {
     box-shadow: 0 0 15px rgba(192, 132, 252, 0.5);
 }
 
-/* Passwordi*/
+
 input:focus {
     border-color: #6366f1;
     box-shadow: 0 0 10px rgba(99,102,241,0.3);
 }
 
-/* Butonat*/
+
 button {
     width: 100%;
     padding: 14px;
@@ -147,7 +147,7 @@ button:hover {
     box-shadow: 0 10px 30px rgba(99,102,241,0.5);
 }
 
-/* linqet */
+
 a {
     display: block;
     margin-top: 15px;
@@ -160,7 +160,6 @@ a:hover {
     color: #6366f1;
 }
 
-/* te mouse kur bon glow*/
 .glow {
     position: absolute;
     width: 250px;
