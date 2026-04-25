@@ -80,7 +80,7 @@ nav a:hover {
 
             <!-- me shfaq vetem emrin -->
             <span class="user">
-                👋 <?php echo $_SESSION['firstname']; ?>
+                 <?php echo $_SESSION['firstname']; ?>
             </span>
 
             <a href="dashboard.php">Dashboard</a>
