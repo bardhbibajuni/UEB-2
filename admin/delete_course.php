@@ -1,14 +1,15 @@
 <?php
 session_start();
-include "db.php";
+include "../db.php";
+include "classes/Admin.php";
 
 // if ($_SESSION['is_admin'] != 1) {
 //     die("Access denied");
 // }
 
-$id = (int) $_GET['id'];
+$admin = new Admin($conn);
 
-mysqli_query($conn, "DELETE FROM courses WHERE id=$id");
+$admin->deleteCourse($_GET['id']);
 
-header("Location: courses.php");
+header("Location: admin.php");
 ?>
