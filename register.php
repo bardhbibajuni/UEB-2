@@ -12,9 +12,7 @@ if(isset($_POST['register'])){
     $lastname  = trim($_POST['lastname']);
     $email     = strtolower(trim($_POST['email']));
     $password  = $_POST['password'];
-    $category = $_POST['category'];
-
-
+  $category = $_POST['category'];
 
     if(!preg_match("/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)){
         $error = "Invalid email format";
@@ -95,6 +93,7 @@ if(isset($_POST['register'])){
         <input type="text" name="lastname" placeholder="Last Name" required>
         <input type="email" name="email" placeholder="Email" required>
         <input type="password" name="password" placeholder="Password" required>
+
 <select name="category" required>
     <option value="">Select Course Category</option>
     <option value="programming">Programming</option>
