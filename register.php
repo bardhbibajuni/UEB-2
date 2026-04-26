@@ -5,7 +5,6 @@ $error = "";
 if(!isset($_SESSION['users'])){
     $_SESSION['users'] = [];
 }
-
 if(isset($_POST['register'])){
 
     $firstname = trim($_POST['firstname']);
