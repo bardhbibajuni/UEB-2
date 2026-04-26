@@ -1,12 +1,33 @@
 <?php
 session_start();
-/* Kontrollo nese perdoruesi eshte kyçur, nese jo e ridrejton ne login */
-if(!isset($_SESSION['user'])){
+require_once 'helpers.php';
+
+/* Kontrollo login */
+if (!isset($_SESSION['user'])) {
     header("Location: login.php");
     exit();
 }
+
+$user = $_SESSION['user'];
+
+/* siguri për courses & purchases */
+$allCourses = getData(DATA_DIR . '/courses.php') ?? [];
+$purchases  = getData(DATA_DIR . '/purchases.php') ?? [];
+
+/* fallback ID (sepse ti s’ke id në register) */
+$userId = $user['id'] ?? $user['email'] ?? null;
+
+/* llogarit kursat e blera */
+$myCount = 0;
+
+if ($userId) {
+    $myCount = count(array_filter($purchases, function ($p) use ($userId) {
+        return isset($p['user_id']) && $p['user_id'] == $userId;
+    }));
+}
+
+include "header.php";
 ?>
-<?php include "header.php"; ?>
 
 <style>
 .bg {
@@ -20,7 +41,7 @@ if(!isset($_SESSION['user'])){
     filter: blur(100px);
     z-index: -1;
 }
-/* Glow efekti */
+
 .glow {
     position: fixed;
     width: 250px;
@@ -32,13 +53,11 @@ if(!isset($_SESSION['user'])){
     z-index: 0;
 }
 
-/* Containeri */
-.dashboard {
+.dashboard-wrapper {
     text-align: center;
     padding: 100px 20px;
     color: white;
 }
-
 
 .title {
     font-size: 3rem;
@@ -49,94 +68,77 @@ if(!isset($_SESSION['user'])){
     margin-bottom: 10px;
 }
 
-
 .subtitle {
     color: #9ca3af;
     margin-bottom: 30px;
 }
 
-/* Logout butoni */
-.logout-btn {
-    padding: 14px 30px;
-    border-radius: 30px;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
+.dash-links {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.dash-btn {
+    padding: 12px 25px;
+    border-radius: 25px;
+    text-decoration: none;
     color: white;
-    background: linear-gradient(135deg, #ff00ff, #6366f1);
+    background: linear-gradient(135deg, #6366f1, #00ffff);
     transition: 0.3s;
 }
 
-.logout-btn:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 10px 30px rgba(255,0,255,0.5);
+.dash-btn:hover {
+    transform: translateY(-3px);
 }
 </style>
-require_once 'helpers.php';
-
-if (!isset($_SESSION['user'])) {
-    header('Location: login.php');
-    exit;
-}
-
-$user = $_SESSION['user'];
-$allCourses = getData(DATA_DIR . '/courses.php');
-$purchases  = getData(DATA_DIR . '/purchases.php');
-$myCount = count(array_filter($purchases, fn($p) => $p['user_id'] == $user['id']));
-
-include 'header.php';
-?>
 
 <div class="dashboard-wrapper">
     <div class="glow" id="glow"></div>
 
     <h1 class="title">
-    Welcome, <?php echo "{$_SESSION['firstname']} {$_SESSION['lastname']}!"; ?>
-</h1>
-    
-  <p class="subtitle">
-    Welcome to your Brain Boost dashboard.
-</p>
-        Welcome, <?= sanitize($user['firstname']) . ' ' . sanitize($user['lastname']) ?>!
+        Welcome, <?= sanitize($user['firstname'] ?? '') . ' ' . sanitize($user['lastname'] ?? '') ?>!
     </h1>
+
     <p class="subtitle">
-        <?php if (isset($_COOKIE['brain_boost_user'])): ?>
-            Good to see you again, <?= sanitize($_COOKIE['brain_boost_user']) ?>!
-        <?php else: ?>
-            Your Brain Boost Dashboard
-        <?php endif; ?>
+        Welcome to your Brain Boost dashboard.
     </p>
 
     <div class="stats-row">
+
         <div class="stat-card">
             <div class="stat-number"><?= count($allCourses) ?></div>
             <div class="stat-label">Courses Available</div>
         </div>
+
         <div class="stat-card">
             <div class="stat-number"><?= $myCount ?></div>
             <div class="stat-label">My Courses</div>
         </div>
+
         <div class="stat-card">
-            <div class="stat-number"><?= ucfirst($user['role']) ?></div>
+            <div class="stat-number"><?= ucfirst($user['role'] ?? 'user') ?></div>
             <div class="stat-label">Role</div>
         </div>
+
     </div>
 
     <div class="dash-links">
         <a href="courses.php" class="dash-btn">Browse Courses</a>
         <a href="my_courses.php" class="dash-btn">My Courses</a>
-        <?php if ($user['role'] === 'admin'): ?>
+
+        <?php if (($user['role'] ?? '') === 'admin'): ?>
             <a href="add_course.php" class="dash-btn">Add Course</a>
-            <a href="admin/admin.php" class="dash-btn dash-btn-admin">Admin Panel</a>
+            <a href="admin/admin.php" class="dash-btn">Admin Panel</a>
         <?php endif; ?>
     </div>
 </div>
 
-
-
 <script>
 const glow = document.getElementById("glow");
-/* Levizja e efektit me maus */
+
 document.addEventListener("mousemove", (e) => {
     glow.style.left = e.clientX + "px";
     glow.style.top = e.clientY + "px";
@@ -144,4 +146,3 @@ document.addEventListener("mousemove", (e) => {
 </script>
 
 <?php include "footer.php"; ?>
-<?php include 'footer.php'; ?>
