@@ -2,17 +2,18 @@
 <html>
 <head>
     <title>Course Platform</title>
-    <link rel="stylesheet" href="../assets/style.css">
+    <link rel="stylesheet" href="../style.css">
 </head>
 <body>
 
-<?php include 'nav.php'; ?>
-
 <?php
 session_start();
+require_once __DIR__ . '/../helpers.php';
 
-// fake login
-if (!isset($_SESSION["user_id"])) {
-    $_SESSION["user_id"] = 1; 
+if (!isset($_SESSION['user'])) {
+    header('Location: ../login.php');
+    exit;
 }
 ?>
+
+<?php include 'nav.php'; ?>

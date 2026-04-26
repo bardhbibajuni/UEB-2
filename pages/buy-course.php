@@ -1,8 +1,14 @@
 <?php
 
 session_start();
+require_once __DIR__ . '/../helpers.php';
 
-$user_id = $_SESSION["user_id"];
+if (!isset($_SESSION['user'])) {
+    header('Location: ../login.php');
+    exit;
+}
+
+$user_id = $_SESSION['user']['id'];
 $course_id = $_POST["course_id"];
 $date = date("Y-m-d");
 

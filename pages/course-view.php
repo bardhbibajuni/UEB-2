@@ -3,7 +3,7 @@
 
 <?php
 
-$user_id = $_SESSION["user_id"];
+$user_id = $_SESSION['user']['id'];
 $course_id = $_GET["id"];
 
 $courses = include '../data/courses.php';
