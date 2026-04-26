@@ -1,104 +1,111 @@
 <?php
 session_start();
+require_once 'helpers.php';
 
 $error = "";
-if(!isset($_SESSION['users'])){
-    $_SESSION['users'] = [];
-}
 
-if(isset($_POST['register'])){
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $firstname = trim($_POST['firstname']);
-    $lastname  = trim($_POST['lastname']);
-    $email     = strtolower(trim($_POST['email']));
-    $password  = $_POST['password'];
+    $lastname = trim($_POST['lastname']);
+    $email = strtolower(trim($_POST['email']));
+    $password = $_POST['password'];
 
-    if(!preg_match("/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)){
-        $error = "Invalid email format";
-    }
-
-    
-    if(!preg_match("/^[a-zA-Z]{2,}$/", $firstname)){
+    if (!preg_match("/^[a-zA-Z]{2,}$/", $firstname)) {
         $error = "First name must be at least 2 letters";
-    }
-
-    
-    if(!preg_match("/^[a-zA-Z]{2,}$/", $lastname)){
+    } elseif (!preg_match("/^[a-zA-Z]{2,}$/", $lastname)) {
         $error = "Last name must be at least 2 letters";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "Invalid email format";
+    } elseif (!preg_match("/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&._-]).{6,}$/", $password)) {
+        $error = "Weak password";
     }
 
+    if ($error === "") {
 
-    if(!preg_match("/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&._-]).{6,}$/", $password)){
-        $error = "Password must contain letter, number, special char and be 6+ characters";
-    }
+        $users = getData(DATA_DIR . '/users.php');
 
-
-    if($error != ""){
-        echo "<script>alert('$error');</script>";
-    } else {
-
-        
-        foreach($_SESSION['users'] as $u){
-            if($u['email'] === $email){
+        foreach ($users as $u) {
+            if ($u['email'] === $email) {
                 $error = "User already exists!";
-                echo "<script>alert('$error');</script>";
-                exit();
+                break;
             }
         }
 
-       
-        $_SESSION['users'][] = [
-            "email" => $email,
-            "password" => $password,
-            "firstname" => $firstname,
-            "lastname" => $lastname,
-            "role" => "user"
-        ];
+        if ($error === "") {
 
-        echo "<script>
-            alert('Registration successful!');
-            window.location.href='login.php';
-        </script>";
-        exit();
+            $users[] = [
+                "id" => nextId($users),
+                "firstname" => $firstname,
+                "lastname" => $lastname,
+                "email" => $email,
+                "password" => password_hash($password, PASSWORD_DEFAULT),
+                "role" => "user"
+            ];
+
+            saveData(DATA_DIR . '/users.php', $users);
+
+            header("Location: login.php");
+            exit;
+        }
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Register - Brain Boost</title>
 
-<link rel="stylesheet" href="style.css">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - Brain Boost</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <div class="bg"></div>
+    <div class="glow" id="glow"></div>
 
-<div class="bg"></div>
+    <nav>
+        <div class="logo">Brain Boost</div>
+        <div>
+            <a href="login.php">Login</a>
+            <a href="register.php">Register</a>
+        </div>
+    </nav>
 
-<div class="auth-wrapper">
-    <div class="card">
+    <div class="auth-wrapper">
+        <div class="card">
 
-    <h2>Create Account</h2>
+            <h2>Create Account</h2>
 
-    <form method="POST">
+            <?php if ($error): ?>
+                <div class="alert alert-error"><?= $error ?></div>
+            <?php endif; ?>
 
-        <input type="text" name="firstname" placeholder="First Name" required>
-        <input type="text" name="lastname" placeholder="Last Name" required>
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Password" required>
+            <form method="POST">
 
-        <button type="submit" name="register">Register</button>
+                <input type="text" name="firstname" placeholder="First Name" required>
+                <input type="text" name="lastname" placeholder="Last Name" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Password" required>
 
-    </form>
+                <button type="submit">Register</button>
 
+            </form>
+
+            <br>
+            <a href="login.php" style="color:#9ca3af;">Already have an account? Login</a>
+
+        </div>
     </div>
-</div>
+
+    <script>
+        const glow = document.getElementById('glow');
+        document.addEventListener('mousemove', e => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+    </script>
 
 </body>
-</html>
 
-
-</body>
 </html>
