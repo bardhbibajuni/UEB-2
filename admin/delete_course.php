@@ -1,14 +1,25 @@
 <?php
-session_start();
-include "../data/data.php";
-include "classes/Admin.php";
+include 'includes/header.php';
 
-if ($_SESSION['user']['role'] != "admin") {
-    die("Access denied");
+$id = intval($_GET['id'] ?? 0);
+
+if ($id > 0) {
+    $courses = getData(DATA_DIR . '/courses.php');
+    foreach ($courses as $c) {
+        if ($c['id'] == $id && !empty($c['file'])) {
+            $f = ROOT_DIR . '/' . $c['file'];
+            if (file_exists($f)) @unlink($f);
+        }
+    }
+    $courses = array_values(array_filter($courses, fn($c) => $c['id'] != $id));
+    saveData(DATA_DIR . '/courses.php', $courses);
+
+    $purchases = array_values(array_filter(
+        getData(DATA_DIR . '/purchases.php'),
+        fn($p) => $p['course_id'] != $id
+    ));
+    saveData(DATA_DIR . '/purchases.php', $purchases);
 }
 
-$admin = new Admin($users, $courses);
-
-$admin->deleteCourse($_GET['id']);
-
-header("Location: admin.php");
+header('Location: courses.php');
+exit;

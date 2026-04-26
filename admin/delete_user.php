@@ -1,15 +1,22 @@
 <?php
-session_start();
-include "../data/data.php";
-include "classes/Admin.php";
+include 'includes/header.php';
 
-if ($_SESSION['user']['role'] != "admin") {
-    die("Access denied");
+$id = intval($_GET['id'] ?? 0);
+
+if ($id > 0 && $id !== $_SESSION['user']['id']) {
+    $users = array_values(array_filter(
+        getData(DATA_DIR . '/users.php'),
+        fn($u) => $u['id'] != $id
+    ));
+    saveData(DATA_DIR . '/users.php', $users);
+
+    // Remove their purchases too
+    $purchases = array_values(array_filter(
+        getData(DATA_DIR . '/purchases.php'),
+        fn($p) => $p['user_id'] != $id
+    ));
+    saveData(DATA_DIR . '/purchases.php', $purchases);
 }
 
-$admin = new Admin($users, $courses);
-
-// simulim
-$admin->deleteUser($_GET['id']);
-
-header("Location: users.php");
+header('Location: users.php');
+exit;

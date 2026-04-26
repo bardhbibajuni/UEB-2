@@ -1,60 +1,43 @@
 <?php
 class Admin {
 
-    private $users;
-    private $courses;
-
-    public function __construct($users, $courses) {
-        $this->users = $users;
-        $this->courses = $courses;
-    }
-
     public function getUsers() {
-        return $this->users;
-    }
-    public function deleteUser($id) {
-        foreach ($this->users as $index => $user) {
-            if ($user['id'] == $id) {
-                unset($this->users[$index]);
-                return true;
-            }
-        }
-        return false;
+        return getData(DATA_DIR . '/users.php');
     }
 
     public function getCourses() {
-        return $this->courses;
+        return getData(DATA_DIR . '/courses.php');
+    }
+
+    public function getPurchases() {
+        return getData(DATA_DIR . '/purchases.php');
+    }
+
+    public function deleteUser($id) {
+        $users = array_values(array_filter($this->getUsers(), fn($u) => $u['id'] != $id));
+        saveData(DATA_DIR . '/users.php', $users);
     }
 
     public function deleteCourse($id) {
-        foreach ($this->courses as $index => $course) {
-            if ($course['id'] == $id) {
-                unset($this->courses[$index]);
-                return true;
+        $courses = $this->getCourses();
+        foreach ($courses as $c) {
+            if ($c['id'] == $id && !empty($c['file'])) {
+                $f = ROOT_DIR . '/' . $c['file'];
+                if (file_exists($f)) @unlink($f);
             }
         }
-        return false;
+        $courses = array_values(array_filter($courses, fn($c) => $c['id'] != $id));
+        saveData(DATA_DIR . '/courses.php', $courses);
     }
-    
-        public function countUsers() {
-        return count($this->users);
-    }
-
-    public function countCourses() {
-        return count($this->courses);
-    }
-
 
     public function searchCourses($term) {
-        $result = [];
-
-        foreach ($this->courses as $course) {
-            if (stripos($course['title'], $term) !== false) {
-                $result[] = $course;
-            }
-        }
-
-        return $result;
+        return array_filter($this->getCourses(), function($c) use ($term) {
+            return stripos($c['title'], $term) !== false
+                || stripos($c['description'], $term) !== false;
+        });
     }
+
+    public function countUsers()     { return count($this->getUsers()); }
+    public function countCourses()   { return count($this->getCourses()); }
+    public function countPurchases() { return count($this->getPurchases()); }
 }
-?>
