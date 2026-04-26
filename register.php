@@ -14,6 +14,8 @@ if(isset($_POST['register'])){
     $password  = $_POST['password'];
     $category = $_POST['category'];
 
+
+
     if(!preg_match("/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)){
         $error = "Invalid email format";
     }
@@ -33,7 +35,9 @@ if(isset($_POST['register'])){
         $error = "Password must contain letter, number, special char and be 6+ characters";
     }
 
-
+    if(empty($category)){
+    $error = "Please select a category";
+}
     if($error != ""){
         echo "<script>alert('$error');</script>";
     } else {
