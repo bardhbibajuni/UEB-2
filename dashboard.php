@@ -74,19 +74,16 @@ if(!isset($_SESSION['user'])){
 }
 </style>
 
-<div class="bg"></div>
-<div class="glow" id="glow"></div>
+    <div class="glow" id="glow"></div>
 
-<div class="dashboard">
     <h1 class="title">
-        Welcome, <?php echo $_SESSION['user']; ?> 🧠
-    </h1>
+    Welcome, <?php echo "{$_SESSION['firstname']} {$_SESSION['lastname']}!"; ?>
+</h1>
+    
+  <p class="subtitle">
+    Welcome to your Brain Boost dashboard.
+</p>
 
-    <p class="subtitle">
-        This is your Brain Boost dashboard.
-    </p>
-
-  
 </div>
 
 
