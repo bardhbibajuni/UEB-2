@@ -44,7 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $safeName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $origName);
                 $dest     = UPLOADS_DIR . '/' . $safeName;
                 if (move_uploaded_file($_FILES['course_file']['tmp_name'], $dest)) {
-                    // nese ekziston skedari i vjeter, fshije
                     if ($filePath && file_exists(ROOT_DIR . '/' . $filePath)) {
                         @unlink(ROOT_DIR . '/' . $filePath);
                     }

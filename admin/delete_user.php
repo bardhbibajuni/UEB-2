@@ -10,7 +10,6 @@ if ($id > 0 && $id !== $_SESSION['user']['id']) {
     ));
     saveData(DATA_DIR . '/users.php', $users);
 
-    // fshij edhe blerjet e tij
     $purchases = array_values(array_filter(
         getData(DATA_DIR . '/purchases.php'),
         fn($p) => $p['user_id'] != $id
