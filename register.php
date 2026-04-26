@@ -12,7 +12,7 @@ if(isset($_POST['register'])){
     $lastname  = trim($_POST['lastname']);
     $email     = strtolower(trim($_POST['email']));
     $password  = $_POST['password'];
-  $category = $_POST['category'];
+
 
     if(!preg_match("/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)){
         $error = "Invalid email format";
@@ -33,9 +33,6 @@ if(isset($_POST['register'])){
         $error = "Password must contain letter, number, special char and be 6+ characters";
     }
 
-    if(empty($category)){
-    $error = "Please select a category";
-}
     if($error != ""){
         echo "<script>alert('$error');</script>";
     } else {
@@ -94,13 +91,7 @@ if(isset($_POST['register'])){
         <input type="email" name="email" placeholder="Email" required>
         <input type="password" name="password" placeholder="Password" required>
 
-<select name="category" required>
-    <option value="">Select Course Category</option>
-    <option value="programming">Programming</option>
-    <option value="design">Design</option>
-    <option value="math">Mathematics</option>
-    <option value="science">Science</option>
-</select>
+
         <button type="submit" name="register">Register</button>
 
     </form>
