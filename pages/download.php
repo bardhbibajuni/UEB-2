@@ -9,7 +9,7 @@ $course_id = $_GET["id"];
 $courses = include '../data/courses.php';
 $purchases = include '../data/purchases.php';
 
-// check access again (SECURITY)
+// kontroll i dyte per siguri
 if (!hasPurchased($user_id, $course_id, $purchases)) {
     die("Access denied");
 }

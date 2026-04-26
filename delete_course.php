@@ -22,7 +22,7 @@ if ($id > 0) {
     $courses = array_values(array_filter($courses, fn($c) => $c['id'] != $id));
     saveData(DATA_DIR . '/courses.php', $courses);
 
-    // Also remove purchases for this course
+    // fshij edhe blerjet per kete kurs
     $purchases = array_values(array_filter(
         getData(DATA_DIR . '/purchases.php'),
         fn($p) => $p['course_id'] != $id

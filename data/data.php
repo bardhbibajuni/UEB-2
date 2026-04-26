@@ -5,7 +5,7 @@ $users = [
     ["id" => 2, "username" => "user", "email" => "user@test.com", "password" => "1234", "role" => "user"]
 ];
 
-// Courses
+// kurset
 $courses = [
     ["id" => 1, "title" => "PHP Basics"],
     ["id" => 2, "title" => "JavaScript Basics"]
