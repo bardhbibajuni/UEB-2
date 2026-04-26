@@ -8,3 +8,6 @@ session_destroy();
 header("Location: login.php");
 exit();
 ?>
+setcookie('brain_boost_user', '', time() - 3600, '/');
+header('Location: login.php');
+exit;
