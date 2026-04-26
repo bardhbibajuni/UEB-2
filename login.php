@@ -1,40 +1,45 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 session_start();
-require_once 'helpers.php';
+
+$error = '';
 
 if (isset($_SESSION['user'])) {
     header('Location: index.php');
     exit;
 }
 
-$error = '';
+if (!isset($_SESSION['users']) || !is_array($_SESSION['users'])) {
+    $_SESSION['users'] = [];
+}
 
-    foreach($_SESSION['users'] as $user){
-$isEmailMatch = $user['email'] === $email;
-$isPasswordMatch = $user['password'] === $password;
-
-if($isEmailMatch && $isPasswordMatch){
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email    = strtolower(trim($_POST['email'] ?? ''));
+
+    $email = strtolower(trim($_POST['email'] ?? ''));
     $password = $_POST['password'] ?? '';
 
-    $user = findUser($email);
+    $foundUser = null;
 
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user'] = $user;
-        setcookie('brain_boost_user', $user['firstname'], time() + 3600, '/');
-
-        if ($user['role'] === 'admin') {
-            header('Location: admin/admin.php');
-        } else {
-            header('Location: index.php');
+    foreach ($_SESSION['users'] as $u) {
+        if (!empty($u['email']) && $u['email'] === $email) {
+            $foundUser = $u;
+            break;
         }
-        exit;
-    } else {
-        $error = 'Invalid email or password.';
     }
+
+    if ($foundUser && password_verify($password, $foundUser['password'])) {
+
+        $_SESSION['user'] = $foundUser;
+
+        header("Location: index.php");
+        exit;
+    }
+
+    $error = "Invalid email or password!";
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <div class="bg"></div>
 <div class="glow" id="glow"></div>
 
@@ -56,27 +62,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="auth-wrapper">
     <div class="card">
+
         <h2>Welcome Back</h2>
-        <p style="color:#9ca3af; margin-bottom:10px;">Login to continue to Brain Boost</p>
+
+        <p style="color:#9ca3af; margin-bottom:10px;">
+            Login to continue to Brain Boost
+        </p>
 
         <?php if ($error): ?>
-            <div class="alert alert-error"><?= $error ?></div>
-        <?php endif; ?>
-
-        <?php if (isset($_COOKIE['brain_boost_user'])): ?>
-            <p style="color:#a5f3fc; margin-bottom:10px; font-size:14px;">
-                Welcome back, <?= sanitize($_COOKIE['brain_boost_user']) ?>!
-            </p>
+            <div class="alert alert-error">
+                <?= $error ?>
+            </div>
         <?php endif; ?>
 
         <form method="POST" autocomplete="off">
-            <input type="email" name="email" placeholder="Email" required autocomplete="off">
-            <input type="password" name="password" placeholder="Password" required autocomplete="off">
+
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+
             <button type="submit">Login</button>
+
         </form>
 
         <br>
-        <a href="register.php" style="color:#9ca3af;">Don't have an account? Register</a>
+        <a href="register.php" style="color:#9ca3af;">
+            Don't have an account? Register
+        </a>
+
     </div>
 </div>
 
@@ -87,5 +99,6 @@ document.addEventListener('mousemove', e => {
     glow.style.top  = e.clientY + 'px';
 });
 </script>
+
 </body>
 </html>
