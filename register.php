@@ -53,7 +53,9 @@ if(isset($_POST['register'])){
             "password" => $password,
             "firstname" => $firstname,
             "lastname" => $lastname,
+            "category" => $category,
             "role" => "user"
+        
         ];
 
         echo "<script>
