@@ -3,7 +3,7 @@
 <head>
     <title>Brain Boost Admin</title>
     <!-- We use ../ because admin/includes/ is two levels away from assets/ -->
-    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
     <div class="bg"></div>
