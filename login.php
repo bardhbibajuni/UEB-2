@@ -9,6 +9,11 @@ if (isset($_SESSION['user'])) {
 
 $error = '';
 
+    foreach($_SESSION['users'] as $user){
+$isEmailMatch = $user['email'] === $email;
+$isPasswordMatch = $user['password'] === $password;
+
+if($isEmailMatch && $isPasswordMatch){
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email    = strtolower(trim($_POST['email'] ?? ''));
     $password = $_POST['password'] ?? '';
