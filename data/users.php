@@ -17,4 +17,13 @@
     'password' => '$2y$10$va/HcEmhb8OJ0h4rbP7XHuMOFBwyyfmIHRqzLNZCDXoVADM0LbRom',
     'role' => 'user',
   ),
+  2 => 
+  array (
+    'id' => 3,
+    'firstname' => 'Edison',
+    'lastname' => 'Ukshini',
+    'email' => 'testacc12@gmail.com',
+    'password' => '$2y$10$KrCoc4.RcbLObc8qEwi89.HoidNv06x1GLMhJK4WEZInTFe3NXe12',
+    'role' => 'user',
+  ),
 );

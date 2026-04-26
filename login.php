@@ -61,12 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="alert alert-error"><?= $error ?></div>
             <?php endif; ?>
 
-            <?php if (isset($_COOKIE['brain_boost_user'])): ?>
-                <p style="color:#a5f3fc;">
-                    Welcome back, <?= sanitize($_COOKIE['brain_boost_user']) ?>!
-                </p>
-            <?php endif; ?>
-
             <form method="POST">
                 <input type="email" name="email" placeholder="Email" required>
                 <input type="password" name="password" placeholder="Password" required>
