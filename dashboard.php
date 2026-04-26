@@ -20,7 +20,6 @@ if(!isset($_SESSION['user'])){
     filter: blur(100px);
     z-index: -1;
 }
-
 /* Glow efekti */
 .glow {
     position: fixed;
