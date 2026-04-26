@@ -1,104 +1,147 @@
 <?php
 session_start();
+require_once 'helpers.php';
 
-$error = "";
-if(!isset($_SESSION['users'])){
-    $_SESSION['users'] = [];
+/* Kontrollo login */
+if (!isset($_SESSION['user'])) {
+    header("Location: login.php");
+    exit();
 }
 
-if(isset($_POST['register'])){
+$user = $_SESSION['user'];
 
-    $firstname = trim($_POST['firstname']);
-    $lastname  = trim($_POST['lastname']);
-    $email     = strtolower(trim($_POST['email']));
-    $password  = $_POST['password'];
+/* siguri per courses & purchases */
+$allCourses = getData(DATA_DIR . '/courses.php') ?? [];
+$purchases  = getData(DATA_DIR . '/purchases.php') ?? [];
 
-    if(!preg_match("/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)){
-        $error = "Invalid email format";
-    }
+$userId = $user['id'] ?? $user['email'] ?? null;
 
-    
-    if(!preg_match("/^[a-zA-Z]{2,}$/", $firstname)){
-        $error = "First name must be at least 2 letters";
-    }
+/* llogarit kursat e blera */
+$myCount = 0;
 
-    
-    if(!preg_match("/^[a-zA-Z]{2,}$/", $lastname)){
-        $error = "Last name must be at least 2 letters";
-    }
-
-
-    if(!preg_match("/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&._-]).{6,}$/", $password)){
-        $error = "Password must contain letter, number, special char and be 6+ characters";
-    }
-
-
-    if($error != ""){
-        echo "<script>alert('$error');</script>";
-    } else {
-
-        
-        foreach($_SESSION['users'] as $u){
-            if($u['email'] === $email){
-                $error = "User already exists!";
-                echo "<script>alert('$error');</script>";
-                exit();
-            }
-        }
-
-       
-        $_SESSION['users'][] = [
-            "email" => $email,
-            "password" => $password,
-            "firstname" => $firstname,
-            "lastname" => $lastname,
-            "role" => "user"
-        ];
-
-        echo "<script>
-            alert('Registration successful!');
-            window.location.href='login.php';
-        </script>";
-        exit();
-    }
+if ($userId) {
+    $myCount = count(array_filter($purchases, function ($p) use ($userId) {
+        return isset($p['user_id']) && $p['user_id'] == $userId;
+    }));
 }
+
+include "header.php";
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Register - Brain Boost</title>
+<style>
+.bg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(99,102,241,0.3), transparent 40%),
+        radial-gradient(circle at 80% 30%, rgba(0,255,255,0.2), transparent 40%),
+        radial-gradient(circle at 50% 80%, rgba(255,0,255,0.2), transparent 50%);
+    filter: blur(100px);
+    z-index: -1;
+}
 
-<link rel="stylesheet" href="style.css">
-</head>
+.glow {
+    position: fixed;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(99,102,241,0.4), transparent 60%);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+}
 
-<body>
+.dashboard-wrapper {
+    text-align: center;
+    padding: 100px 20px;
+    color: white;
+}
 
-<div class="bg"></div>
+.title {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, #00ffff, #6366f1, #ff00ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+}
 
-<div class="auth-wrapper">
-    <div class="card">
+.subtitle {
+    color: #9ca3af;
+    margin-bottom: 30px;
+}
 
-    <h2>Create Account</h2>
+.dash-links {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
 
-    <form method="POST">
+.dash-btn {
+    padding: 12px 25px;
+    border-radius: 25px;
+    text-decoration: none;
+    color: white;
+    background: linear-gradient(135deg, #6366f1, #00ffff);
+    transition: 0.3s;
+}
 
-        <input type="text" name="firstname" placeholder="First Name" required>
-        <input type="text" name="lastname" placeholder="Last Name" required>
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Password" required>
+.dash-btn:hover {
+    transform: translateY(-3px);
+}
+</style>
 
-        <button type="submit" name="register">Register</button>
+<div class="dashboard-wrapper">
+    <div class="glow" id="glow"></div>
 
-    </form>
+    <h1 class="title">
+        Welcome, <?= sanitize($user['firstname'] ?? '') . ' ' . sanitize($user['lastname'] ?? '') ?>!
+    </h1>
 
+    <p class="subtitle">
+        Welcome to your Brain Boost dashboard.
+    </p>
+
+    <div class="stats-row">
+
+        <div class="stat-card">
+            <div class="stat-number"><?= count($allCourses) ?></div>
+            <div class="stat-label">Courses Available</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-number"><?= $myCount ?></div>
+            <div class="stat-label">My Courses</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-number"><?= ucfirst($user['role'] ?? 'user') ?></div>
+            <div class="stat-label">Role</div>
+        </div>
+
+    </div>
+
+    <div class="dash-links">
+        <a href="courses.php" class="dash-btn">Browse Courses</a>
+        <a href="my_courses.php" class="dash-btn">My Courses</a>
+
+        <?php if (($user['role'] ?? '') === 'admin'): ?>
+            <a href="add_course.php" class="dash-btn">Add Course</a>
+            <a href="admin/admin.php" class="dash-btn">Admin Panel</a>
+        <?php endif; ?>
     </div>
 </div>
 
-</body>
-</html>
+<script>
+const glow = document.getElementById("glow");
 
+document.addEventListener("mousemove", (e) => {
+    glow.style.left = e.clientX + "px";
+    glow.style.top = e.clientY + "px";
+});
+</script>
 
-</body>
-</html>
+<?php include "footer.php"; ?>
