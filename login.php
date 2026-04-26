@@ -1,7 +1,6 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 session_start();
+require_once 'helpers.php';
 
 $error = '';
 
@@ -10,36 +9,28 @@ if (isset($_SESSION['user'])) {
     exit;
 }
 
-if (!isset($_SESSION['users']) || !is_array($_SESSION['users'])) {
-    $_SESSION['users'] = [];
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $email = strtolower(trim($_POST['email'] ?? ''));
+    $email    = strtolower(trim($_POST['email'] ?? ''));
     $password = $_POST['password'] ?? '';
 
-    $foundUser = null;
+    $user = findUser($email);
 
-    foreach ($_SESSION['users'] as $u) {
-        if (!empty($u['email']) && $u['email'] === $email) {
-            $foundUser = $u;
-            break;
+    if ($user && password_verify($password, $user['password'])) {
+        $_SESSION['user'] = $user;
+        setcookie('brain_boost_user', $user['firstname'], time() + 3600, '/');
+
+        if ($user['role'] === 'admin') {
+            header('Location: admin/admin.php');
+        } else {
+            header('Location: index.php');
         }
-    }
-
-    if ($foundUser && password_verify($password, $foundUser['password'])) {
-
-        $_SESSION['user'] = $foundUser;
-
-        header("Location: index.php");
         exit;
     }
 
-    $error = "Invalid email or password!";
+    $error = 'Invalid email or password!';
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -70,18 +61,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </p>
 
         <?php if ($error): ?>
-            <div class="alert alert-error">
-                <?= $error ?>
-            </div>
+            <div class="alert alert-error"><?= $error ?></div>
+        <?php endif; ?>
+
+        <?php if (isset($_COOKIE['brain_boost_user'])): ?>
+            <p style="color:#a5f3fc; margin-bottom:10px; font-size:14px;">
+                Welcome back, <?= sanitize($_COOKIE['brain_boost_user']) ?>!
+            </p>
         <?php endif; ?>
 
         <form method="POST" autocomplete="off">
-
-            <input type="email" name="email" placeholder="Email" required>
+            <input type="email"    name="email"    placeholder="Email"    required>
             <input type="password" name="password" placeholder="Password" required>
-
             <button type="submit">Login</button>
-
         </form>
 
         <br>
