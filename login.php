@@ -15,8 +15,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     $found = false;
 
     foreach($_SESSION['users'] as $user){
+$isEmailMatch = $user['email'] === $email;
+$isPasswordMatch = $user['password'] === $password;
 
-        if($user['email'] === $email && $user['password'] === $password){
+if($isEmailMatch && $isPasswordMatch){
 
             $_SESSION['firstname'] = $user['firstname'];
             $_SESSION['lastname']  = $user['lastname'];
