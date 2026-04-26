@@ -37,8 +37,8 @@ if ($search !== '') {
             <h3><?= sanitize($course['title']) ?></h3>
             <p class="course-desc"><?= sanitize($course['description']) ?></p>
             <div class="course-meta">
-                <span class="course-price">$<?= number_format($course['price'], 2) ?></span>
-                <span class="course-instructor">by <?= sanitize($course['instructor']) ?></span>
+                <span class="course-price">$<?= number_format($course['price'] ?? 0, 2) ?></span>
+                <span class="course-instructor">by <?= sanitize($course['instructor'] ?? 'Unknown') ?></span>
             </div>
 
             <?php if (isset($_SESSION['user'])): ?>
@@ -47,7 +47,7 @@ if ($search !== '') {
                     <?php if ($purchased): ?>
                         <a href="course_view.php?id=<?= $course['id'] ?>" class="btn-card btn-view">Open Course</a>
                     <?php else: ?>
-                        <a href="buy_course.php?id=<?= $course['id'] ?>" class="btn-card btn-buy">Buy - $<?= number_format($course['price'], 2) ?></a>
+                        <a href="buy_course.php?id=<?= $course['id'] ?>" class="btn-card btn-buy">Buy - $<?= number_format($course['price'] ?? 0, 2) ?></a>
                     <?php endif; ?>
 
                     <?php if ($_SESSION['user']['role'] === 'admin'): ?>
