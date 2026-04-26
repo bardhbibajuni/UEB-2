@@ -13,7 +13,6 @@ if(isset($_POST['register'])){
     $email     = strtolower(trim($_POST['email']));
     $password  = $_POST['password'];
 
-
     if(!preg_match("/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)){
         $error = "Invalid email format";
     }
@@ -32,6 +31,7 @@ if(isset($_POST['register'])){
     if(!preg_match("/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&._-]).{6,}$/", $password)){
         $error = "Password must contain letter, number, special char and be 6+ characters";
     }
+
 
     if($error != ""){
         echo "<script>alert('$error');</script>";
@@ -52,9 +52,7 @@ if(isset($_POST['register'])){
             "password" => $password,
             "firstname" => $firstname,
             "lastname" => $lastname,
-            "category" => $category,
             "role" => "user"
-        
         ];
 
         echo "<script>
@@ -86,20 +84,10 @@ if(isset($_POST['register'])){
 
     <form method="POST">
 
-<input type="text" name="firstname" placeholder="First Name" required>
-<input type="text" name="lastname" placeholder="Last Name" required>
-<input type="email" name="email" placeholder="Email" required>
-<input type="password" name="password" placeholder="Password" required>
-       <select name="course_type" required>
-    <option value="">Select course category</option>
-    <option value="programming">Programming</option>
-    <option value="design">Design</option>
-    <option value="marketing">Marketing</option>
-    <option value="languages">Languages</option>
-    <option value="gaming">Gaming</option>
-</select>
-<button type="submit" name="register">Register</button>
-
+        <input type="text" name="firstname" placeholder="First Name" required>
+        <input type="text" name="lastname" placeholder="Last Name" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
 
         <button type="submit" name="register">Register</button>
 
@@ -107,6 +95,10 @@ if(isset($_POST['register'])){
 
     </div>
 </div>
+
+</body>
+</html>
+
 
 </body>
 </html>
