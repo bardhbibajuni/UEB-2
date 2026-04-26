@@ -3,6 +3,24 @@ session_start();
 require_once 'helpers.php';
 include 'header.php';
 
+<div class="home-container">
+    <div>
+
+        <h1 class="home-title">
+             Brain Boost 🧠
+        </h1>
+
+        <p class="home-text">
+            Learn smarter.  Build faster.  Think better.
+        </p>
+
+        <div style="margin-top:35px; display:flex; flex-direction:column; gap:15px; align-items:center;">
+            <a href="login.php">
+               
+                <button class="btn" style="background: linear-gradient(135deg, #00ffff, #6366f1);">
+                    
+                    Login
+                </button>
 $courses = getData(DATA_DIR . '/courses.php');
 ?>
 
@@ -23,6 +41,12 @@ $courses = getData(DATA_DIR . '/courses.php');
 </div>
 <?php else: ?>
 
+            <a href="register.php">
+                <button class="btn" style="background: linear-gradient(135deg, #ff00ff, #6366f1);">
+                   Register
+                </button>
+            </a>
+        </div>
 <div style="padding:60px 40px 20px; text-align:center;">
     <h1 class="home-title" style="font-size:2.5rem;">
         Welcome back, <?= sanitize($_SESSION['user']['firstname']) ?>!
