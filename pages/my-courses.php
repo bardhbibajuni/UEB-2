@@ -4,7 +4,7 @@
 
 <?php
 
-$user_id = $_SESSION["user_id"];
+$user_id = $_SESSION['user']['id'];
 
 $courses = include '../data/courses.php';
 $purchases = include '../data/purchases.php';
