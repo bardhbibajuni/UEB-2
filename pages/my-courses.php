@@ -11,14 +11,12 @@ $purchases = include '../data/purchases.php';
 
 $my_courses = [];
 
-// find purchased course IDs for this user
 foreach ($purchases as $purchase) {
     if ($purchase["user_id"] == $user_id) {
         $my_courses[] = $purchase["course_id"];
     }
 }
 
-// show only matching courses
 foreach ($courses as $course) {
 
     if (in_array($course["id"], $my_courses)) {

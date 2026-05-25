@@ -9,7 +9,6 @@ $course_id = $_GET["id"];
 $courses = include '../data/courses.php';
 $purchases = include '../data/purchases.php';
 
-// find course
 $course = null;
 foreach ($courses as $c) {
     if ($c["id"] == $course_id) {
@@ -22,7 +21,6 @@ if (!$course) {
     die("Course not found");
 }
 
-// ACCESS CHECK
 if (!hasPurchased($user_id, $course_id, $purchases)) {
     die("Access denied. You must buy this course first.");
 }

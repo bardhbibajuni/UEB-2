@@ -10,6 +10,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
 $id = intval($_GET['id'] ?? 0);
 
 if ($id > 0) {
+
     $courses = getData(DATA_DIR . '/courses.php');
 
     foreach ($courses as $course) {
@@ -27,6 +28,7 @@ if ($id > 0) {
         getData(DATA_DIR . '/purchases.php'),
         fn($p) => $p['course_id'] != $id
     ));
+
     saveData(DATA_DIR . '/purchases.php', $purchases);
 }
 

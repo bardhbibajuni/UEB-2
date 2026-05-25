@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Brain Boost</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="glow" id="glow"></div>
+
+<nav>
+    <div class="logo">Brain Boost</div>
+
+    <div>
+        <a href="index.php">Home</a>
+        <a href="courses.php">Courses</a>
+
+    
+    </div>
+</nav>
+
+<script>
+const glow = document.getElementById('glow');
+
+if (glow) {
+    document.addEventListener('mousemove', e => {
+        glow.style.left = e.clientX + 'px';
+        glow.style.top  = e.clientY + 'px';
+    });
+}
+</script>
+
+</body>
+</html>

@@ -43,12 +43,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $safeName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $origName);
                 $dest     = UPLOADS_DIR . '/' . $safeName;
+
                 if (move_uploaded_file($_FILES['course_file']['tmp_name'], $dest)) {
+
                     // Delete old file if exists
                     if ($filePath && file_exists(ROOT_DIR . '/' . $filePath)) {
                         @unlink(ROOT_DIR . '/' . $filePath);
                     }
+
                     $filePath = 'uploads/' . $safeName;
+
                 } else {
                     $error = 'Failed to upload file.';
                 }
@@ -57,6 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!$error) {
             $courses = getData(DATA_DIR . '/courses.php');
+
             foreach ($courses as &$c) {
                 if ($c['id'] == $id) {
                     $c['title']       = sanitize($title);
@@ -67,8 +72,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
                 }
             }
+
             saveData(DATA_DIR . '/courses.php', $courses);
-            $course = findCourse($id);
+
+            $course  = findCourse($id);
             $success = 'Course updated successfully!';
         }
     }
@@ -79,40 +86,67 @@ include 'header.php';
 
 <div class="form-wrapper">
     <div class="card wide-card">
+
         <h2>Edit Course</h2>
 
         <?php if ($error): ?>
             <div class="alert alert-error"><?= $error ?></div>
         <?php endif; ?>
+
         <?php if ($success): ?>
             <div class="alert alert-success"><?= $success ?></div>
         <?php endif; ?>
 
         <form method="POST" enctype="multipart/form-data">
+
             <label>Course Title</label>
-            <input type="text" name="title" value="<?= sanitize($course['title']) ?>" required>
+            <input type="text"
+                   name="title"
+                   value="<?= sanitize($course['title']) ?>"
+                   required>
 
             <label>Description</label>
-            <textarea name="description" rows="4" required><?= sanitize($course['description']) ?></textarea>
+            <textarea name="description"
+                      rows="4"
+                      required><?= sanitize($course['description']) ?></textarea>
 
             <label>Price ($)</label>
-            <input type="number" name="price" step="0.01" min="0" value="<?= $course['price'] ?>" required>
+            <input type="number"
+                   name="price"
+                   step="0.01"
+                   min="0"
+                   value="<?= $course['price'] ?>"
+                   required>
 
             <label>Replace Course File (PDF / Video, optional)</label>
+
             <?php if ($course['file']): ?>
-                <p style="color:#9ca3af; font-size:13px;">Current: <?= sanitize(basename($course['file'])) ?></p>
+                <p style="color:#9ca3af; font-size:13px;">
+                    Current: <?= sanitize(basename($course['file'])) ?>
+                </p>
             <?php endif; ?>
-            <input type="file" name="course_file" accept=".pdf,.mp4,.mov,.avi,.mkv,.zip">
+
+            <input type="file"
+                   name="course_file"
+                   accept=".pdf,.mp4,.mov,.avi,.mkv,.zip">
 
             <label>Video URL (optional)</label>
-            <input type="url" name="video_url" value="<?= sanitize($course['video_url']) ?>"
+
+            <input type="url"
+                   name="video_url"
+                   value="<?= sanitize($course['video_url']) ?>"
                    placeholder="https://www.youtube.com/embed/...">
 
             <button type="submit">Save Changes</button>
+
         </form>
 
         <br>
-        <a href="courses.php" style="color:#9ca3af;">&larr; Back to Courses</a>
+
+        <a href="courses.php" style="color:#9ca3af;">
+            &larr; Back to Courses
+        </a>
+
     </div>
 </div>
 
