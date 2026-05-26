@@ -70,13 +70,13 @@ include 'header.php';
 </div>
 
 <script>
-fetch('https://zenquotes.io/api/random')
+fetch('ajax/get_quote.php')
     .then(r => r.json())
     .then(data => {
-        if (data && data[0]) {
+        if (data && data.quote) {
             document.getElementById('quote-box').innerHTML =
-                '"' + data[0].q + '"' +
-                '<div class="quote-author">— ' + data[0].a + '</div>';
+                '"' + data.quote + '"' +
+                '<div class="quote-author">— ' + data.author + '</div>';
         }
     })
     .catch(() => {
