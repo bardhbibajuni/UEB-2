@@ -1,8 +1,6 @@
 <?php
 include 'includes/header.php';
-
-$courses   = getData(DATA_DIR . '/courses.php');
-$purchases = getData(DATA_DIR . '/purchases.php');
+$courses = getAllCourses();
 ?>
 
 <div class="dashboard-wrapper">
@@ -19,34 +17,28 @@ $purchases = getData(DATA_DIR . '/purchases.php');
         <table class="admin-table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Price</th>
-                    <th>File</th>
-                    <th>Sales</th>
-                    <th>Actions</th>
+                    <th>ID</th><th>Title</th><th>Price</th>
+                    <th>File</th><th>Sales</th><th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-            <?php foreach ($courses as $course): ?>
-                <?php $sales = count(array_filter($purchases, fn($p) => $p['course_id'] == $course['id'])); ?>
+            <?php foreach ($courses as $c): ?>
                 <tr>
-                    <td>#<?= $course['id'] ?></td>
-                    <td><?= sanitize($course['title']) ?></td>
-                    <td>$<?= number_format($course['price'], 2) ?></td>
+                    <td>#<?= $c['id'] ?></td>
+                    <td><?= sanitize($c['title']) ?></td>
+                    <td>$<?= number_format($c['price'], 2) ?></td>
                     <td>
-                        <?php if ($course['file']): ?>
+                        <?php if ($c['file_path']): ?>
                             <span style="color:#4ade80;">&#10003; Uploaded</span>
                         <?php else: ?>
                             <span style="color:#f87171;">No file</span>
                         <?php endif; ?>
                     </td>
-                    <td><?= $sales ?></td>
+                    <td><?= countPurchasesForCourse($c['id']) ?></td>
                     <td>
-                        <a href="../edit_course.php?id=<?= $course['id'] ?>" class="btn-card btn-edit">Edit</a>
-                        <a href="delete_course.php?id=<?= $course['id'] ?>"
-                           class="btn-card btn-delete"
-                           onclick="return confirm('Delete this course?')">Delete</a>
+                        <a href="../edit_course.php?id=<?= $c['id'] ?>" class="btn-card btn-edit">Edit</a>
+                        <a href="#" class="btn-card btn-delete"
+                           onclick="ajaxDelete(<?= $c['id'] ?>, this); return false;">Delete</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -55,5 +47,26 @@ $purchases = getData(DATA_DIR . '/purchases.php');
         <?php endif; ?>
     </div>
 </div>
+
+<script>
+function ajaxDelete(id, btn) {
+    if (!confirm('Delete this course?')) return;
+    btn.textContent = '...';
+    fetch('../ajax/delete_course.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'id=' + id
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            btn.closest('tr').style.opacity = '0';
+            setTimeout(() => btn.closest('tr').remove(), 300);
+        } else {
+            alert(data.message || 'Error'); btn.textContent = 'Delete';
+        }
+    });
+}
+</script>
 
 <?php include 'includes/footer.php'; ?>
