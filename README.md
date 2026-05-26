@@ -39,10 +39,40 @@ Ky aplikacion është projektuar për të ofruar një përvojë të thjeshtë po
 
 ## 🚀 Veçoritë "On Top" (Premium Features)
 
-* **🎨 Dynamic Mouse Glow:** Një dritë interaktive ndjek kursorin e miut në të gjithë faqen (e krijuar me JS në `header.php`).
+* **🎨 Dynamic Mouse Glow:** Një dritë interaktive ndjek kursorin e miut në të gjithë faqen.
 * **🛡️ Secure Downloads:** Skedari `download.php` mbron materialet; askush nuk mund të shkarkojë një skedar pa e pasur kursin të blerë.
-* **⚡ Flat-File Database:** Nuk kërkohet SQL! Të dhënat ruhen në skedarë PHP të enkriptuar në folderin `/data`, duke e bërë aplikacionin jashtëzakonisht të shpejtë.
-* **🔒 XSS Protection:** Çdo input nga përdoruesi sanitizohet automatikisht për të parandaluar sulmet kibernetike.
+* **🗄️ MySQL me Prepared Statements:** Çdo query në DB përdor parametra të lidhur (PDO) për mbrojtje nga SQL Injection.
+* **🔒 XSS Protection:** Çdo input nga përdoruesi sanitizohet automatikisht me `htmlspecialchars`.
+
+---
+
+## ⚙️ Çfarë u shtua në FAZA II
+
+### Integrimi me MySQL
+* 4 tabela me relacione: `users`, `courses`, `purchases`, `contact_messages`.
+* CRUD i plotë për kurset dhe përdoruesit me **prepared statements**.
+
+### Siguria
+* SQL Injection: PDO + prepared statements në çdo query.
+* XSS: `sanitize()` për çdo output dhe input.
+* Validim server-side (length, format, role).
+* `password_hash()` + `password_verify()` për fjalëkalimet.
+* CSRF token helper.
+* Session regenerate ID në login, pastrim cookies në logout.
+* MIME type check për file upload.
+
+### Koncepte të avancuara
+* File handling: upload PDF/Video me kontroll të extension dhe MIME (max 200MB).
+* Error handling me `try/catch` në çdo veprim DB.
+* Email përmes formes së kontaktit (`mail()` në `contact.php`).
+
+### AJAX & Web API
+* **AJAX CRUD** (pa refresh):
+  * `ajax/delete_course.php` – fshirje kursi.
+  * `ajax/search_courses.php` – live search.
+  * `ajax/toggle_user_role.php` – update i rolit.
+  * `ajax/check_email.php` – kontroll i emailit në regjistrim.
+* **Web API i jashtëm:** `ajax/get_quote.php` lidhet me `api.adviceslip.com` për të marrë një këshillë në dashboard.
 
 ---
 
