@@ -17,14 +17,14 @@ if (isset($_POST['register'])) {
     $password  = $_POST['password'] ?? '';
 
     try {
-        if (!validateName($firstname)) {
-            $error = 'First name must be at least 2 letters (no numbers or symbols).';
-        } elseif (!validateName($lastname)) {
-            $error = 'Last name must be at least 2 letters (no numbers or symbols).';
+        if (!validateName($firstname) || strlen($firstname) > 50) {
+            $error = 'First name must be 2-50 letters (no numbers or symbols).';
+        } elseif (!validateName($lastname) || strlen($lastname) > 50) {
+            $error = 'Last name must be 2-50 letters (no numbers or symbols).';
         } elseif (!validateEmail($email)) {
             $error = 'Invalid email format.';
-        } elseif (!validatePassword($password)) {
-            $error = 'Password must be 6+ characters and include a letter, number, and special character.';
+        } elseif (!validatePassword($password) || strlen($password) > 100) {
+            $error = 'Password must be 6-100 characters and include a letter, number, and special character.';
         } elseif (findUser($email)) {
             $error = 'An account with this email already exists.';
         } else {

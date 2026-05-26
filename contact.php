@@ -12,12 +12,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $message = trim($_POST['message'] ?? '');
 
     try {
-        if (strlen($name) < 2) {
-            $error = 'Name must be at least 2 characters.';
+        if (strlen($name) < 2 || strlen($name) > 100) {
+            $error = 'Name must be 2-100 characters.';
         } elseif (!validateEmail($email)) {
             $error = 'Please enter a valid email address.';
-        } elseif (strlen($message) < 10) {
-            $error = 'Message must be at least 10 characters.';
+        } elseif (strlen($message) < 10 || strlen($message) > 2000) {
+            $error = 'Message must be 10-2000 characters.';
         } else {
             saveContactMessage($name, $email, $message);
 
