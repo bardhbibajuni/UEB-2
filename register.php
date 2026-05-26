@@ -45,7 +45,7 @@ if (isset($_POST['register'])) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register – Brain Boost</title>
+    <title>Register - Brain Boost</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>

@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS contact_messages (
 -- ── Seed Data ──────────────────────────────────────────────
 -- Admin password: Admin123!
 INSERT INTO users (firstname, lastname, email, password, role) VALUES
-('Admin', 'User', 'admin@brainboost.com', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
+('Admin', 'User', 'admin@brainboost.com', '$2y$12$siEx9PMYF.yPyzNO47c9cujpxM/IBmxXpBWJ/blh3LojeuS6jcByu', 'admin');
 
 -- Regular user password: User123!
 INSERT INTO users (firstname, lastname, email, password, role) VALUES
