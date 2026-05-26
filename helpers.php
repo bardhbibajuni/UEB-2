@@ -284,14 +284,35 @@ function handleFileUpload(string $inputName): array {
         return $result;
     }
 
+    if ($_FILES[$inputName]['error'] !== UPLOAD_ERR_OK) {
+        $result['error'] = 'Upload error code: ' . $_FILES[$inputName]['error'];
+        return $result;
+    }
+
     $origName = basename($_FILES[$inputName]['name']);
     $ext      = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
     $allowed  = ['pdf', 'mp4', 'mov', 'avi', 'mkv', 'zip'];
+    $allowedMime = [
+        'application/pdf', 'video/mp4', 'video/quicktime',
+        'video/x-msvideo', 'video/x-matroska',
+        'application/zip', 'application/x-zip-compressed',
+    ];
 
     if (!in_array($ext, $allowed)) {
         $result['error'] = 'Allowed file types: PDF, MP4, MOV, AVI, MKV, ZIP.';
         return $result;
     }
+
+    if (function_exists('finfo_open')) {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime  = finfo_file($finfo, $_FILES[$inputName]['tmp_name']);
+        finfo_close($finfo);
+        if ($mime && !in_array($mime, $allowedMime)) {
+            $result['error'] = 'File content does not match allowed types (MIME: ' . $mime . ').';
+            return $result;
+        }
+    }
+
     if ($_FILES[$inputName]['size'] > 200 * 1024 * 1024) {
         $result['error'] = 'File too large (max 200 MB).';
         return $result;
