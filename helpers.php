@@ -25,6 +25,9 @@ function csrfCheck(?string $token): bool {
 }
 
 function validateEmail(string $email): bool {
+    $email = trim($email);
+    if (strlen($email) > 150) return false;
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) return false;
     return (bool) preg_match('/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/', $email);
 }
 
