@@ -76,8 +76,9 @@ if (isset($_POST['register'])) {
                    value="<?= sanitize($_POST['firstname'] ?? '') ?>" required>
             <input type="text"  name="lastname"  placeholder="Last Name"
                    value="<?= sanitize($_POST['lastname']  ?? '') ?>" required>
-            <input type="email" name="email"     placeholder="Email"
+            <input type="email" name="email" id="emailField"  placeholder="Email"
                    value="<?= sanitize($_POST['email']     ?? '') ?>" required>
+            <small id="emailStatus" style="display:block;margin:-8px 0 8px 4px;font-size:12px;min-height:14px;"></small>
             <input type="password" name="password"
                    placeholder="Password (6+, letter, number, special char)" required>
             <button type="submit" name="register">Create Account</button>
@@ -87,5 +88,27 @@ if (isset($_POST['register'])) {
         <a href="login.php" style="color:#9ca3af;">Already have an account? Login</a>
     </div>
 </div>
+
+<script>
+let emailTimer;
+const emailField  = document.getElementById('emailField');
+const emailStatus = document.getElementById('emailStatus');
+
+emailField.addEventListener('input', function () {
+    clearTimeout(emailTimer);
+    const val = this.value.trim();
+    if (val.length < 4) { emailStatus.textContent = ''; return; }
+
+    emailTimer = setTimeout(() => {
+        fetch('ajax/check_email.php?email=' + encodeURIComponent(val))
+            .then(r => r.json())
+            .then(data => {
+                emailStatus.textContent = data.message || '';
+                emailStatus.style.color = data.valid ? '#4ade80' : '#f87171';
+            })
+            .catch(() => { emailStatus.textContent = ''; });
+    }, 400);
+});
+</script>
 </body>
 </html>
