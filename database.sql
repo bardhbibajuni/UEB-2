@@ -1,11 +1,7 @@
--- ============================================================
---  Brain Boost – MySQL Database Schema  (Phase II)
--- ============================================================
-
 CREATE DATABASE IF NOT EXISTS brain_boost CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE brain_boost;
 
--- ── Users ──────────────────────────────────────────────────
+-- Tabelat
 CREATE TABLE IF NOT EXISTS users (
     id         INT AUTO_INCREMENT PRIMARY KEY,
     firstname  VARCHAR(50)  NOT NULL,
@@ -16,7 +12,6 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ── Courses ────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS courses (
     id          INT AUTO_INCREMENT PRIMARY KEY,
     title       VARCHAR(200) NOT NULL,
@@ -28,7 +23,6 @@ CREATE TABLE IF NOT EXISTS courses (
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ── Purchases ──────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS purchases (
     id         INT AUTO_INCREMENT PRIMARY KEY,
     user_id    INT NOT NULL,
@@ -39,7 +33,6 @@ CREATE TABLE IF NOT EXISTS purchases (
     UNIQUE KEY unique_purchase (user_id, course_id)
 );
 
--- ── Contact Messages ───────────────────────────────────────
 CREATE TABLE IF NOT EXISTS contact_messages (
     id         INT AUTO_INCREMENT PRIMARY KEY,
     name       VARCHAR(100) NOT NULL,
@@ -48,12 +41,14 @@ CREATE TABLE IF NOT EXISTS contact_messages (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ── Seed Data ──────────────────────────────────────────────
+
+-- insertimi i demo data
+
 -- Admin password: Admin123!
 INSERT INTO users (firstname, lastname, email, password, role) VALUES
 ('Admin', 'User', 'admin@brainboost.com', '$2y$12$siEx9PMYF.yPyzNO47c9cujpxM/IBmxXpBWJ/blh3LojeuS6jcByu', 'admin');
 
--- Regular user password: User123!
+-- User password: User123!
 INSERT INTO users (firstname, lastname, email, password, role) VALUES
 ('Demo', 'Student', 'student@brainboost.com', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user');
 
