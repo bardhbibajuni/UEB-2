@@ -9,12 +9,41 @@ function sanitize($input): string {
     return htmlspecialchars(trim((string)($input ?? '')), ENT_QUOTES, 'UTF-8');
 }
 
+function csrfToken(): string {
+    if (session_status() === PHP_SESSION_NONE) session_start();
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf_token'];
+}
+
+function csrfCheck(?string $token): bool {
+    if (session_status() === PHP_SESSION_NONE) session_start();
+    return !empty($token)
+        && !empty($_SESSION['csrf_token'])
+        && hash_equals($_SESSION['csrf_token'], $token);
+}
+
 function validateEmail(string $email): bool {
+    $email = trim($email);
+    if (strlen($email) > 150) return false;
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) return false;
     return (bool) preg_match('/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/', $email);
 }
 
 function validatePassword(string $pw): bool {
     return (bool) preg_match('/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&._\-]).{6,}$/', $pw);
+}
+
+function passwordStrength(string $pw): int {
+    $score = 0;
+    if (strlen($pw) >= 6)  $score++;
+    if (strlen($pw) >= 10) $score++;
+    if (preg_match('/[A-Z]/', $pw)) $score++;
+    if (preg_match('/[a-z]/', $pw)) $score++;
+    if (preg_match('/\d/',   $pw)) $score++;
+    if (preg_match('/[@$!%*#?&._\-]/', $pw)) $score++;
+    return min($score, 5);
 }
 
 function validateName(string $name): bool {
@@ -72,6 +101,35 @@ function createUser(string $firstname, string $lastname, string $email, string $
         return true;
     } catch (PDOException $e) {
         error_log('createUser error: ' . $e->getMessage());
+        return false;
+    }
+}
+
+function updateUser(int $id, string $firstname, string $lastname, string $email): bool {
+    try {
+        $db   = getDB();
+        $stmt = $db->prepare('UPDATE users SET firstname=?, lastname=?, email=? WHERE id=?');
+        $stmt->execute([
+            sanitize($firstname),
+            sanitize($lastname),
+            strtolower(trim($email)),
+            $id,
+        ]);
+        return true;
+    } catch (PDOException $e) {
+        error_log('updateUser error: ' . $e->getMessage());
+        return false;
+    }
+}
+
+function updateUserPassword(int $id, string $newPassword): bool {
+    try {
+        $db   = getDB();
+        $stmt = $db->prepare('UPDATE users SET password=? WHERE id=?');
+        $stmt->execute([password_hash($newPassword, PASSWORD_DEFAULT), $id]);
+        return true;
+    } catch (PDOException $e) {
+        error_log('updateUserPassword error: ' . $e->getMessage());
         return false;
     }
 }
@@ -255,14 +313,35 @@ function handleFileUpload(string $inputName): array {
         return $result;
     }
 
+    if ($_FILES[$inputName]['error'] !== UPLOAD_ERR_OK) {
+        $result['error'] = 'Upload error code: ' . $_FILES[$inputName]['error'];
+        return $result;
+    }
+
     $origName = basename($_FILES[$inputName]['name']);
     $ext      = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
     $allowed  = ['pdf', 'mp4', 'mov', 'avi', 'mkv', 'zip'];
+    $allowedMime = [
+        'application/pdf', 'video/mp4', 'video/quicktime',
+        'video/x-msvideo', 'video/x-matroska',
+        'application/zip', 'application/x-zip-compressed',
+    ];
 
     if (!in_array($ext, $allowed)) {
         $result['error'] = 'Allowed file types: PDF, MP4, MOV, AVI, MKV, ZIP.';
         return $result;
     }
+
+    if (function_exists('finfo_open')) {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime  = finfo_file($finfo, $_FILES[$inputName]['tmp_name']);
+        finfo_close($finfo);
+        if ($mime && !in_array($mime, $allowedMime)) {
+            $result['error'] = 'File content does not match allowed types (MIME: ' . $mime . ').';
+            return $result;
+        }
+    }
+
     if ($_FILES[$inputName]['size'] > 200 * 1024 * 1024) {
         $result['error'] = 'File too large (max 200 MB).';
         return $result;

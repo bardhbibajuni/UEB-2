@@ -1,0 +1,7 @@
+ErrorDocument 404 /UEB-2/404.php
+
+# Block direct access to sensitive files
+<FilesMatch "(database\.sql|db\.php|helpers\.php)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
