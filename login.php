@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = findUser($email);
 
         if ($user && password_verify($password, $user['password'])) {
+            session_regenerate_id(true);
             $_SESSION['user'] = $user;
             setcookie('brain_boost_user', $user['firstname'], time() + 3600, '/');
 
