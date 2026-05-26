@@ -7,16 +7,7 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 
-$userId    = $_SESSION['user']['id'];
-$purchases = getData(DATA_DIR . '/purchases.php');
-$allCourses = getData(DATA_DIR . '/courses.php');
-
-$myIds = array_column(
-    array_filter($purchases, fn($p) => $p['user_id'] == $userId),
-    'course_id'
-);
-
-$myCourses = array_filter($allCourses, fn($c) => in_array($c['id'], $myIds));
+$myCourses = getUserCourses((int)$_SESSION['user']['id']);
 
 include 'header.php';
 ?>
@@ -25,10 +16,10 @@ include 'header.php';
     <h1 class="section-title">My Courses</h1>
 
     <?php if (empty($myCourses)): ?>
-        <div style="text-align:center; margin-top:60px;">
+        <div style="text-align:center;margin-top:60px;">
             <p class="subtitle">You haven't purchased any courses yet.</p>
             <a href="courses.php">
-                <button class="btn" style="background:linear-gradient(135deg,#00ffff,#6366f1); margin-top:20px;">
+                <button class="btn" style="background:linear-gradient(135deg,#00ffff,#6366f1);margin-top:20px;">
                     Browse Courses
                 </button>
             </a>
@@ -44,7 +35,7 @@ include 'header.php';
                 <span class="course-instructor">by <?= sanitize($course['instructor']) ?></span>
             </div>
             <a href="course_view.php?id=<?= $course['id'] ?>" class="btn-card btn-view">Open Course</a>
-            <?php if (!empty($course['file'])): ?>
+            <?php if (!empty($course['file_path'])): ?>
                 <a href="download.php?id=<?= $course['id'] ?>" class="btn-card btn-edit" style="margin-top:6px;">Download</a>
             <?php endif; ?>
         </div>
