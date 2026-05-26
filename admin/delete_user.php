@@ -3,22 +3,12 @@ include 'includes/header.php';
 
 $id = intval($_GET['id'] ?? 0);
 
-if ($id > 0 && $id !== $_SESSION['user']['id']) {
-
-    $users = array_values(array_filter(
-        getData(DATA_DIR . '/users.php'),
-        fn($u) => $u['id'] != $id
-    ));
-
-    saveData(DATA_DIR . '/users.php', $users);
-
-    // Remove their purchases too
-    $purchases = array_values(array_filter(
-        getData(DATA_DIR . '/purchases.php'),
-        fn($p) => $p['user_id'] != $id
-    ));
-
-    saveData(DATA_DIR . '/purchases.php', $purchases);
+if ($id > 0 && $id !== (int)$_SESSION['user']['id']) {
+    try {
+        deleteUser($id);
+    } catch (Exception $e) {
+        error_log('delete_user error: ' . $e->getMessage());
+    }
 }
 
 header('Location: users.php');
