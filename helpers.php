@@ -35,6 +35,17 @@ function validatePassword(string $pw): bool {
     return (bool) preg_match('/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&._\-]).{6,}$/', $pw);
 }
 
+function passwordStrength(string $pw): int {
+    $score = 0;
+    if (strlen($pw) >= 6)  $score++;
+    if (strlen($pw) >= 10) $score++;
+    if (preg_match('/[A-Z]/', $pw)) $score++;
+    if (preg_match('/[a-z]/', $pw)) $score++;
+    if (preg_match('/\d/',   $pw)) $score++;
+    if (preg_match('/[@$!%*#?&._\-]/', $pw)) $score++;
+    return min($score, 5);
+}
+
 function validateName(string $name): bool {
     return (bool) preg_match('/^[a-zA-Z]{2,}$/', $name);
 }
