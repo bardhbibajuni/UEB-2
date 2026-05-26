@@ -1,27 +1,28 @@
 <?php
 include 'includes/header.php';
 
-$users     = getData(DATA_DIR . '/users.php');
-$purchases = getData(DATA_DIR . '/purchases.php');
-$search    = trim($_GET['search'] ?? '');
+$search = trim($_GET['search'] ?? '');
+$users  = getAllUsers();
 
 if ($search !== '') {
     $users = array_filter($users, function($u) use ($search) {
-        return stripos($u['email'], $search) !== false
+        return stripos($u['email'],     $search) !== false
             || stripos($u['firstname'], $search) !== false
-            || stripos($u['lastname'], $search) !== false;
+            || stripos($u['lastname'],  $search) !== false;
     });
 }
+
+$purchases = getAllPurchases();
 ?>
 
 <div class="dashboard-wrapper">
     <h1 class="title">Manage Users</h1>
 
-    <form method="GET" class="search-form" style="max-width:500px; margin:0 auto 30px;">
+    <form method="GET" class="search-form" style="max-width:500px;margin:0 auto 30px;">
         <input type="text" name="search" placeholder="Search by name or email..." value="<?= sanitize($search) ?>">
         <button type="submit">Search</button>
         <?php if ($search): ?>
-            <a href="users.php" style="color:#9ca3af; margin-left:10px;">Clear</a>
+            <a href="users.php" style="color:#9ca3af;margin-left:10px;">Clear</a>
         <?php endif; ?>
     </form>
 
@@ -32,12 +33,8 @@ if ($search !== '') {
         <table class="admin-table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Purchases</th>
-                    <th>Actions</th>
+                    <th>ID</th><th>Name</th><th>Email</th>
+                    <th>Role</th><th>Purchases</th><th>Registered</th><th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -56,13 +53,14 @@ if ($search !== '') {
                         </span>
                     </td>
                     <td><?= $userPurchases ?></td>
+                    <td><?= sanitize(substr($u['created_at'], 0, 10)) ?></td>
                     <td>
                         <?php if (!$isSelf): ?>
                             <a href="delete_user.php?id=<?= $u['id'] ?>"
                                class="btn-card btn-delete"
                                onclick="return confirm('Delete user <?= sanitize($u['email']) ?>?')">Delete</a>
                         <?php else: ?>
-                            <span style="color:#9ca3af; font-size:12px;">You</span>
+                            <span style="color:#9ca3af;font-size:12px;">You</span>
                         <?php endif; ?>
                     </td>
                 </tr>
