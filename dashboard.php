@@ -60,6 +60,7 @@ include 'header.php';
     <div class="dash-links">
         <a href="courses.php"    class="dash-btn">Browse Courses</a>
         <a href="my_courses.php" class="dash-btn">My Courses</a>
+        <a href="profile.php"    class="dash-btn">Profile</a>
         <a href="contact.php"    class="dash-btn">Contact Us</a>
 
         <?php if (($user['role'] ?? '') === 'admin'): ?>
