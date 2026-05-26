@@ -50,7 +50,7 @@ INSERT INTO users (firstname, lastname, email, password, role) VALUES
 
 -- User password: User123!
 INSERT INTO users (firstname, lastname, email, password, role) VALUES
-('Demo', 'Student', 'student@brainboost.com', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user');
+('Demo', 'Student', 'student@brainboost.com', '$2y$12$0J/vOAzdH9XNL/TYJgeLSOHrUPJu3dO4Gzg1hrTQs2T9zY8kGoN7i', 'user');
 
 INSERT INTO courses (title, description, price, instructor, video_url) VALUES
 ('PHP Basics',            'Learn PHP from zero to hero. Variables, loops, functions, OOP and more.', 29.99, 'Admin User', ''),
