@@ -9,7 +9,7 @@ if (!isset($_SESSION['user'])) {
 
 $id     = intval($_GET['id'] ?? 0);
 $course = findCourse($id);
-$userId = $_SESSION['user']['id'];
+$userId = (int)$_SESSION['user']['id'];
 
 if (!$course) {
     header('Location: courses.php');
@@ -21,20 +21,25 @@ if (!hasPurchased($userId, $id) && $_SESSION['user']['role'] !== 'admin') {
     exit('Access denied. You must purchase this course first.');
 }
 
-if (empty($course['file'])) {
+if (empty($course['file_path'])) {
     exit('No file available for this course yet.');
 }
 
-$filePath = ROOT_DIR . '/' . $course['file'];
+$filePath = ROOT_DIR . '/' . $course['file_path'];
 
 if (!file_exists($filePath)) {
     exit('File not found on server.');
 }
 
-$filename = basename($filePath);
-header('Content-Type: application/octet-stream');
-header('Content-Disposition: attachment; filename="' . $filename . '"');
-header('Content-Length: ' . filesize($filePath));
-header('Cache-Control: no-cache');
-readfile($filePath);
-exit;
+try {
+    $filename = basename($filePath);
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Content-Length: ' . filesize($filePath));
+    header('Cache-Control: no-cache');
+    readfile($filePath);
+    exit;
+} catch (Exception $e) {
+    error_log('download error: ' . $e->getMessage());
+    exit('Download failed.');
+}

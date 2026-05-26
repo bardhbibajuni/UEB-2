@@ -9,7 +9,7 @@ if (!isset($_SESSION['user'])) {
 
 $id     = intval($_GET['id'] ?? 0);
 $course = findCourse($id);
-$userId = $_SESSION['user']['id'];
+$userId = (int)$_SESSION['user']['id'];
 
 if (!$course) {
     header('Location: courses.php');
@@ -25,10 +25,13 @@ include 'header.php';
 ?>
 
 <div class="view-wrapper">
-    <a href="my_courses.php" style="color:#9ca3af; display:inline-block; margin-bottom:20px;">&larr; My Courses</a>
+    <a href="my_courses.php" style="color:#9ca3af;display:inline-block;margin-bottom:20px;">&larr; My Courses</a>
 
     <h1 class="title"><?= sanitize($course['title']) ?></h1>
-    <p class="subtitle">by <?= sanitize($course['instructor']) ?> &nbsp;&bull;&nbsp; Added <?= sanitize($course['created_at']) ?></p>
+    <p class="subtitle">
+        by <?= sanitize($course['instructor']) ?> &nbsp;&bull;&nbsp;
+        Added <?= sanitize(substr($course['created_at'], 0, 10)) ?>
+    </p>
 
     <div class="course-content-box">
         <h3>About This Course</h3>
@@ -47,20 +50,16 @@ include 'header.php';
     </div>
     <?php endif; ?>
 
-    <?php if (!empty($course['file'])): ?>
+    <?php if (!empty($course['file_path'])): ?>
     <div class="course-content-box">
         <h3>Course Material</h3>
-        <?php $ext = strtolower(pathinfo($course['file'], PATHINFO_EXTENSION)); ?>
-
+        <?php $ext = strtolower(pathinfo($course['file_path'], PATHINFO_EXTENSION)); ?>
         <?php if ($ext === 'pdf'): ?>
-            <div style="margin-bottom:15px;">
-                <iframe src="<?= sanitize($course['file']) ?>"
-                        style="width:100%; height:500px; border-radius:10px; border:1px solid rgba(255,255,255,0.1);">
-                </iframe>
-            </div>
+            <iframe src="<?= sanitize($course['file_path']) ?>"
+                    style="width:100%;height:500px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);">
+            </iframe>
         <?php endif; ?>
-
-        <a href="download.php?id=<?= $id ?>" class="btn-card btn-view" style="display:inline-block;">
+        <a href="download.php?id=<?= $id ?>" class="btn-card btn-view" style="display:inline-block;margin-top:12px;">
             Download <?= strtoupper($ext) ?> File
         </a>
     </div>
