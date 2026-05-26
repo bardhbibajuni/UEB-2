@@ -24,6 +24,7 @@ if (!defined('ROOT_DIR')) require_once __DIR__ . '/helpers.php';
         <?php if (isset($_SESSION['user'])): ?>
             <a href="my_courses.php">My Courses</a>
             <a href="dashboard.php">Dashboard</a>
+            <a href="profile.php">Profile</a>
 
             <?php if ($_SESSION['user']['role'] === 'admin'): ?>
                 <a href="add_course.php">Add Course</a>

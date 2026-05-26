@@ -105,6 +105,35 @@ function createUser(string $firstname, string $lastname, string $email, string $
     }
 }
 
+function updateUser(int $id, string $firstname, string $lastname, string $email): bool {
+    try {
+        $db   = getDB();
+        $stmt = $db->prepare('UPDATE users SET firstname=?, lastname=?, email=? WHERE id=?');
+        $stmt->execute([
+            sanitize($firstname),
+            sanitize($lastname),
+            strtolower(trim($email)),
+            $id,
+        ]);
+        return true;
+    } catch (PDOException $e) {
+        error_log('updateUser error: ' . $e->getMessage());
+        return false;
+    }
+}
+
+function updateUserPassword(int $id, string $newPassword): bool {
+    try {
+        $db   = getDB();
+        $stmt = $db->prepare('UPDATE users SET password=? WHERE id=?');
+        $stmt->execute([password_hash($newPassword, PASSWORD_DEFAULT), $id]);
+        return true;
+    } catch (PDOException $e) {
+        error_log('updateUserPassword error: ' . $e->getMessage());
+        return false;
+    }
+}
+
 function deleteUser(int $id): bool {
     try {
         $db   = getDB();
