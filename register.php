@@ -79,8 +79,11 @@ if (isset($_POST['register'])) {
             <input type="email" name="email" id="emailField"  placeholder="Email"
                    value="<?= sanitize($_POST['email']     ?? '') ?>" required>
             <small id="emailStatus" style="display:block;margin:-8px 0 8px 4px;font-size:12px;min-height:14px;"></small>
-            <input type="password" name="password"
+            <input type="password" name="password" id="pwField"
                    placeholder="Password (6+, letter, number, special char)" required>
+            <div id="pwMeter" style="height:6px;border-radius:3px;background:#1f2937;margin:-6px 0 12px;overflow:hidden;">
+                <div id="pwMeterBar" style="height:100%;width:0;transition:width 0.2s,background 0.2s;"></div>
+            </div>
             <button type="submit" name="register">Create Account</button>
         </form>
 
@@ -108,6 +111,23 @@ emailField.addEventListener('input', function () {
             })
             .catch(() => { emailStatus.textContent = ''; });
     }, 400);
+});
+
+const pwField = document.getElementById('pwField');
+const pwBar   = document.getElementById('pwMeterBar');
+const colors  = ['#ef4444','#f97316','#eab308','#84cc16','#22c55e','#16a34a'];
+
+pwField.addEventListener('input', function () {
+    const v = this.value;
+    let s = 0;
+    if (v.length >= 6)  s++;
+    if (v.length >= 10) s++;
+    if (/[A-Z]/.test(v)) s++;
+    if (/[a-z]/.test(v)) s++;
+    if (/\d/.test(v))    s++;
+    if (/[@$!%*#?&._\-]/.test(v)) s++;
+    pwBar.style.width = (s * 20) + '%';
+    pwBar.style.background = colors[Math.min(s, 5)];
 });
 </script>
 </body>
